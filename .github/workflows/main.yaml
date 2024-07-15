@@ -71,7 +71,9 @@ jobs:
       - name: Run l3build
         run: l3build check --show-log-on-error -q -H
       - name: Archive failed test output
-        if: ${{ always() }}
+        # Enable the other "if" in case you use this instead of "test"
+        if: false
+        # if: ${{ always() }}
         uses: zauguin/l3build-failure-artifacts@v1
         with:
           name: testfiles-${{ matrix.platform }}
@@ -113,6 +115,8 @@ jobs:
       - name: Run l3build
         run: l3build doc -q -H
       - name: Archive documentation
+        # Remove following line if you use this instead of of "doc"
+        if: false
         uses: actions/upload-artifact@v4
         with:
           name: Documentation
