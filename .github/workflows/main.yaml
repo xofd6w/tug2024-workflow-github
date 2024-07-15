@@ -16,22 +16,13 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  l3build:
+  test:
     runs-on: ${{(matrix.platform == 'Linux' && 'ubuntu-22.04') || (matrix.platform == 'Windows' && 'windows-2022') || (matrix.platform == 'macOS' && 'macos-14')}}
     strategy:
       matrix:
-        kind: [test]
         # We use more redable names here. The enables updating the concrete runners without changing the names
         platform: [Linux, Windows, macOS]
-        include:
-          # include indicates that we want to add explicitly these combinations.
-          #
-          # IMPORTANT: artifact_name == "doc" is used as a trigger to
-          #   generate the artifact from PDF files and not the build directory and
-          #   to generate the artifact when the run is successfu (not when it fails).
-          - kind: doc
-            platform: Linux
-    name: "${{ format('{0} - {1}', matrix.kind == 'doc' && 'Documentation' || 'Test suite', matrix.platform) }}"
+    name: "Test suite ${{ matrix.platform }}"
     steps:
       # Boilerplate
       - name: Checkout repository
@@ -47,19 +38,31 @@ jobs:
           cache_version: 0
       - name: Run l3build
         # Create the l3build command based on the actual 
-        run: ${{ format('l3build {0} -q -H', matrix.kind == 'doc' && 'doc' || 'check --show-log-on-error') }}
-      # Now we create the artifacts: There are two cases where this happens.
-      # 1. If we failed running tests
+        run: l3build check --show-log-on-error -q -H
       - name: Archive failed test output
-        if: ${{ matrix.kind == 'test' && always() }}
+        if: ${{ always() }}
         uses: zauguin/l3build-failure-artifacts@v1
         with:
           name: testfiles-${{ matrix.platform }}
           # Decide how long to keep the test output artifact:
           retention-days: 3
-      # 2. If we succeed building documentation
+  doc:
+    runs-on: ubuntu-22.04
+    name: Documentation
+    steps:
+      # Boilerplate
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          show-progress: 'false'
+      - name: Install TeX Live
+        uses: zauguin/install-texlive@v3
+        with:
+          package_file: .github/tl_packages
+          cache_version: 0
+      - name: Run l3build
+        run: l3build doc -q -H
       - name: Archive documentation
-        if: ${{ matrix.kind == 'doc' && success() }}
         uses: actions/upload-artifact@v4
         with:
           name: Documentation
