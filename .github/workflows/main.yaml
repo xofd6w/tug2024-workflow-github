@@ -23,7 +23,7 @@ jobs:
         # We use more redable names here. The enables updating the concrete runners without changing the names
         platform: [Linux, Windows, macOS]
         texlive: [2022, 2023, 2024]
-    name: "Test suite ${{ matrix.platform }} (plain)"
+    name: "Test suite ${{ matrix.platform }} (plain), TeXLive ${{ matrix.texlive }}"
     steps:
       # Boilerplate
       - name: Checkout repository
@@ -57,9 +57,12 @@ jobs:
   # alternative to "test" - full texlive image by Island of TeX available at https://gitlab.com/islandoftex/images/texlive
   test-on-iot-texlive:
     runs-on: ubuntu-22.04
-    name: "Test suite Linux (Island)"
+    strategy:
+      matrix:
+        image: ["TL2022-historic", "TL2023-historic", "latest"]
+    name: "Test suite Linux (Island) on ${{ matrix.image }}"
     container:
-      image: registry.gitlab.com/islandoftex/images/texlive:latest
+      image: registry.gitlab.com/islandoftex/images/texlive:${{ matrix.image }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
