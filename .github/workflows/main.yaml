@@ -22,6 +22,7 @@ jobs:
       matrix:
         # We use more redable names here. The enables updating the concrete runners without changing the names
         platform: [Linux, Windows, macOS]
+        texlive: [2022, 2023, 2024]
     name: "Test suite ${{ matrix.platform }} (plain)"
     steps:
       # Boilerplate
@@ -30,11 +31,19 @@ jobs:
         with:
           show-progress: 'false'
       - name: Install TeX Live
+        if: ${{ matrix.texlive == 2024 }}
         uses: zauguin/install-texlive@v3
         with:
           # The list of packages to install is in a separate file under .github/tl_packages
           # to allow reuse.
           package_file: .github/tl_packages
+      - name: Install TeX Live
+        if: ${{ matrix.texlive < 2024 }}
+        # Similar action to zauguin/install-texlive@v3, has some drawbacks in mirror selection
+        uses: teatimeguest/setup-texlive-action@v3
+        with:
+          package-file: .github/tl_packages
+          version: ${{ matrix.texlive }}
       - name: Run l3build
         run: l3build check --show-log-on-error -q -H
       - name: Archive failed test output
