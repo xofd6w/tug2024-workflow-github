@@ -22,7 +22,7 @@ jobs:
       matrix:
         # We use more redable names here. The enables updating the concrete runners without changing the names
         platform: [Linux, Windows, macOS]
-    name: "Test suite ${{ matrix.platform }}"
+    name: "Test suite ${{ matrix.platform }} (plain)"
     steps:
       # Boilerplate
       - name: Checkout repository
@@ -45,10 +45,11 @@ jobs:
           name: testfiles-${{ matrix.platform }}
           # Decide how long to keep the test output artifact:
           retention-days: 3
-  # alternative to small setup - full texlive image by Island of TeX available at https://gitlab.com/islandoftex/images/texlive
+
+  # alternative to "test" - full texlive image by Island of TeX available at https://gitlab.com/islandoftex/images/texlive
   test-on-iot-texlive:
     runs-on: ubuntu-22.04
-    name: "Test suite Linux"
+    name: "Test suite Linux (Island)"
     container:
       image: registry.gitlab.com/islandoftex/images/texlive:latest
     steps:
@@ -64,11 +65,11 @@ jobs:
         with:
           name: testfiles-${{ matrix.platform }}
           retention-days: 3
+
   doc:
     runs-on: ubuntu-22.04
     name: Documentation
     steps:
-      # Boilerplate
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
@@ -85,5 +86,24 @@ jobs:
         with:
           name: Documentation
           path: "build/doc/*.pdf"
-          # Decide how long to keep the test output artifact:
+          retention-days: 21
+
+  # alternative to "doc" - full texlive image by Island of TeX available at https://gitlab.com/islandoftex/images/texlive
+  doc-on-iot-texlive:
+    runs-on: ubuntu-22.04
+    name: Documentation (Island)
+    container:
+      image: registry.gitlab.com/islandoftex/images/texlive:latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          show-progress: 'false'
+      - name: Run l3build
+        run: l3build doc -q -H
+      - name: Archive documentation
+        uses: actions/upload-artifact@v4
+        with:
+          name: Documentation
+          path: "build/doc/*.pdf"
           retention-days: 21
