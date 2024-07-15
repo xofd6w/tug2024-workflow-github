@@ -18,7 +18,7 @@ concurrency:
 jobs:
   test-on-iot-texlive:
     runs-on: ubuntu-22.04
-    name: "Test suite Linux (Island)"
+    name: "Test suite Linux"
     container:
       image: registry.gitlab.com/islandoftex/images/texlive:latest
     steps:
@@ -37,7 +37,7 @@ jobs:
 
   doc-on-iot-texlive:
     runs-on: ubuntu-22.04
-    name: Documentation (Island)
+    name: Documentation
     container:
       image: registry.gitlab.com/islandoftex/images/texlive:latest
     steps:
