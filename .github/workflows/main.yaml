@@ -10,6 +10,11 @@ on:
 # pull request is open this runs twice. But it's important to ensure that pull
 # requests get tested even if their branch comes from a fork.
 
+# Cancel running builds on push on the same branch or pull request
+concurrency:
+  group: "${{ github.workflow }}-${{ github.head_ref || github.ref }}"
+  cancel-in-progress: true
+
 jobs:
   l3build:
     runs-on: ${{(matrix.platform == 'Linux' && 'ubuntu-22.04') || (matrix.platform == 'Windows' && 'windows-2022') || (matrix.platform == 'macOS' && 'macos-14')}}
@@ -58,6 +63,6 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: Documentation
-          path: "**/*.pdf"
+          path: "build/doc/*.pdf"
           # Decide how long to keep the test output artifact:
           retention-days: 21
