@@ -35,7 +35,6 @@ jobs:
           # The list of packages to install is in a separate file under .github/tl_packages
           # to allow reuse.
           package_file: .github/tl_packages
-          cache_version: 0
       - name: Run l3build
         run: l3build check --show-log-on-error -q -H
       - name: Archive failed test output
