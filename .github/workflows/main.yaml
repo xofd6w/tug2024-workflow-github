@@ -22,8 +22,7 @@ jobs:
       matrix:
         # We use more redable names here. The enables updating the concrete runners without changing the names
         platform: [Linux, Windows, macOS]
-        texlive: [2022, 2023, 2024]
-    name: "Test suite ${{ matrix.platform }} (plain), TeXLive ${{ matrix.texlive }}"
+    name: "Test suite ${{ matrix.platform }} (plain)"
     steps:
       # Boilerplate
       - name: Checkout repository
@@ -31,19 +30,11 @@ jobs:
         with:
           show-progress: 'false'
       - name: Install TeX Live
-        if: ${{ matrix.texlive == 2024 }}
         uses: zauguin/install-texlive@v3
         with:
           # The list of packages to install is in a separate file under .github/tl_packages
           # to allow reuse.
           package_file: .github/tl_packages
-      - name: Install TeX Live
-        if: ${{ matrix.texlive < 2024 }}
-        # Similar action to zauguin/install-texlive@v3, has some drawbacks in mirror selection
-        uses: teatimeguest/setup-texlive-action@v3
-        with:
-          package-file: .github/tl_packages
-          version: ${{ matrix.texlive }}
       - name: Run l3build
         run: l3build check --show-log-on-error -q -H
       - name: Archive failed test output
@@ -52,31 +43,6 @@ jobs:
         with:
           name: testfiles-${{ matrix.platform }}
           # Decide how long to keep the test output artifact:
-          retention-days: 3
-
-  # alternative to "test" - full texlive image by Island of TeX available at https://gitlab.com/islandoftex/images/texlive
-  test-on-iot-texlive:
-    runs-on: ubuntu-22.04
-    strategy:
-      matrix:
-        image: ["TL2022-historic", "TL2023-historic", "latest"]
-    name: "Test suite Linux (Island) on ${{ matrix.image }}"
-    container:
-      image: registry.gitlab.com/islandoftex/images/texlive:${{ matrix.image }}
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          show-progress: 'false'
-      - name: Run l3build
-        run: l3build check --show-log-on-error -q -H
-      - name: Archive failed test output
-        # Enable the other "if" in case you use this instead of "test"
-        if: false
-        # if: ${{ always() }}
-        uses: zauguin/l3build-failure-artifacts@v1
-        with:
-          name: testfiles-${{ matrix.platform }}
           retention-days: 3
 
   doc:
@@ -95,28 +61,6 @@ jobs:
       - name: Run l3build
         run: l3build doc -q -H
       - name: Archive documentation
-        uses: actions/upload-artifact@v4
-        with:
-          name: Documentation
-          path: "build/doc/*.pdf"
-          retention-days: 21
-
-  # alternative to "doc" - full texlive image by Island of TeX available at https://gitlab.com/islandoftex/images/texlive
-  doc-on-iot-texlive:
-    runs-on: ubuntu-22.04
-    name: Documentation (Island)
-    container:
-      image: registry.gitlab.com/islandoftex/images/texlive:latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          show-progress: 'false'
-      - name: Run l3build
-        run: l3build doc -q -H
-      - name: Archive documentation
-        # Remove following line if you use this instead of of "doc"
-        if: false
         uses: actions/upload-artifact@v4
         with:
           name: Documentation
