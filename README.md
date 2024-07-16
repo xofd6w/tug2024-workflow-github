@@ -18,3 +18,8 @@ It was presented at [TUG 2024](https://www.tug.org/tug2024/).
 
 To use this with your package, copy `.github/.*` to your repository and adapt the files according to your needs.
 We recommend using the [Dependency Printer for TeX Live](https://gitlab.com/islandoftex/texmf/depp) to adapt the file `.github/tl_packages` to contain all required packages.
+
+## Branches
+
+The `main` branch contains workflows for all cases.
+The other branches contain stripped-down versions.
