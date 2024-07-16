@@ -1,4 +1,4 @@
-# GitHub Workflow template for LaTeX document compiltation
+# GitHub Workflow template for LaTeX document compilation
 
 This is a template for package maintainers for GitHub-based workflows to compile their documents on GitHub.
 
