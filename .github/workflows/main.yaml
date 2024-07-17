@@ -28,8 +28,6 @@ jobs:
       # Boilerplate
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          show-progress: 'false'
       - name: Install TeX Live
         if: ${{ matrix.texlive == 2024 }}
         uses: zauguin/install-texlive@v3
@@ -66,8 +64,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          show-progress: 'false'
       - name: Run l3build
         run: l3build check --show-log-on-error -q -H
       - name: Archive failed test output
@@ -85,8 +81,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          show-progress: 'false'
       - name: Install TeX Live
         uses: zauguin/install-texlive@v3
         with:
@@ -110,8 +104,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          show-progress: 'false'
       - name: Run l3build
         run: l3build doc -q -H
       - name: Archive documentation
