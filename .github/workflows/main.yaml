@@ -27,8 +27,6 @@ jobs:
       # Boilerplate
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          show-progress: 'false'
       - name: Install TeX Live
         uses: zauguin/install-texlive@v3
         with:
@@ -51,8 +49,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          show-progress: 'false'
       - name: Install TeX Live
         uses: zauguin/install-texlive@v3
         with:
