@@ -24,8 +24,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          show-progress: 'false'
       - name: Run l3build
         run: l3build check --show-log-on-error -q -H
       - name: Archive failed test output
@@ -43,8 +41,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          show-progress: 'false'
       - name: Run l3build
         run: l3build doc -q -H
       - name: Archive documentation
